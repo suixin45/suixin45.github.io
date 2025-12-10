@@ -5,70 +5,66 @@
     <title>随心期待</title>
     <meta name="keywords" content="随心Blog,随心网络,传说网络,传说导航,传说代挂网,CSWL">
     <meta name="description" content="网站维护中">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <style>
-        /* CSS 重置与基础样式 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
             margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-            font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            /* 使用系统字体栈，国内访问速度最快 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: #fefeff;
             background: rgb(8, 5, 16);
             -webkit-font-smoothing: antialiased;
-            
-            /* 【核心】隐藏鼠标指针 */
-            cursor: none !important; 
-            
-            /* 【核心】禁止用户选中任何内容 */
-            user-select: none; 
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            cursor: none !important; /* 隐藏鼠标 */
+            user-select: none; /* 禁止选择 */
         }
 
-        /* 文字容器 */
         #container {
             position: absolute; z-index: 20; width: 100%; height: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; 
-            pointer-events: none; /* 让鼠标事件穿透文字层传递给Canvas */
+            pointer-events: none; 
         }
 
-        /* 链接样式 */
         #container a { 
-            pointer-events: auto; /* 恢复链接的可点击性 */
+            pointer-events: auto; 
             color: #fff; 
             text-decoration: none; 
             border-bottom: 1px dotted #666; 
-            transition: color 0.3s; 
+            transition: color 0.3s, border-bottom 0.3s; 
             margin: 5px; 
             display: inline-block;
-            cursor: none !important; /* 链接上也隐藏鼠标 */
+            cursor: none !important; 
+            position: relative;
+            z-index: 30; /* 确保链接在最上层 */
         }
         
-        #container a:hover { color: #0ff; }
+        #container a:hover { 
+            color: #0ff; 
+            border-bottom: 1px solid #0ff;
+        }
 
         h1 {
-            font-family: 'Cinzel', serif; font-size: clamp(1.5rem, 5vw, 2.75rem);
-            font-weight: 400; letter-spacing: 0.35em;
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 300; letter-spacing: 0.35em;
             text-shadow: 0 0 25px rgba(254, 254, 255, 0.85);
             margin-bottom: 15px;
         }
 
         h2 {
-            font-family: 'Cinzel', serif; font-size: clamp(0.8rem, 3vw, 1.45em);
-            font-weight: 400; letter-spacing: 0.5em;
+            font-size: clamp(0.9rem, 3vw, 1.5em);
+            font-weight: 300; letter-spacing: 0.5em;
             text-shadow: 0 0 25px rgba(254, 254, 255, 0.85);
-            text-transform: lowercase; margin-bottom: 30px;
+            opacity: 0.8;
+            margin-bottom: 30px;
         }
 
-        /* 文字渐显动画 */
-        h1, h2 { visibility: hidden; opacity: 0; transition: opacity 2s ease; }
+        h1, h2 { visibility: hidden; opacity: 0; transition: opacity 2.5s ease; }
         h1.transition-in, h2.transition-in { visibility: visible; opacity: 1; }
 
-        /* 画布样式 */
         #canvas {
             position: absolute; top: 0; left: 0; z-index: 10; width: 100%; height: 100%; 
             cursor: none !important; 
@@ -84,8 +80,8 @@
             <h2 id="h2">网站目前正在维护！请各位客官稍后</h2>
             
             <div style="font-size: 14px; line-height: 2;">
-                <a href="https://qm.qq.com/cgi-bin/qm/qr?k=Q52ocpcmw0zv6DnPGgNYsi6xEwIzQT0A&noverify=0" target="_blank">联系方式</a><br>
-                <a href="http://beian.miit.gov.cn/" target="_blank">闽ICP备2022014585号-1</a>
+                <a href="https://qm.qq.com/cgi-bin/qm/qr?k=Q52ocpcmw0zv6DnPGgNYsi6xEwIzQT0A&noverify=0" target="_blank" class="hover-trigger">联系方式</a><br>
+                <a href="http://beian.miit.gov.cn/" target="_blank" class="hover-trigger">闽ICP备2022014585号-1</a>
             </div>
         </div>
     </div>
@@ -97,53 +93,62 @@
     </audio>
 
     <script>
-        // ==========================================================
-        // 【核心】防 F12 及 键盘拦截脚本
-        // ==========================================================
-        document.onkeydown = function (event) {
-            var e = event || window.event || arguments.callee.caller.arguments[0];
-            
-            // 拦截 F12
-            if (e && e.keyCode == 123) {
-                return false;
-            }
-            
-            // 拦截 Ctrl+Shift+I (开发者工具)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
-                return false;
-            }
-            
-            // 拦截 Ctrl+Shift+J (控制台)
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
-                return false;
-            }
-            
-            // 拦截 Ctrl+U (查看源代码)
-            if (e.ctrlKey && e.keyCode == 85) {
-                return false;
-            }
-            
-            // 拦截 Ctrl+S (保存网页)
-            if (e.ctrlKey && e.keyCode == 83) {
+        // --- 1. 安全拦截脚本 ---
+        document.onkeydown = function (e) {
+            e = e || window.event;
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && (e.keyCode == 85 || e.keyCode == 83))) {
                 return false;
             }
         };
 
-        // 交互逻辑：点击页面任意位置播放音乐
+        // --- 2. 音乐控制与页面可见性 API ---
+        const audio = document.getElementById('bgm');
+        let isUserInteracted = false;
+
+        // 点击页面播放
         document.body.addEventListener('click', function() {
-            var audio = document.getElementById('bgm');
-            if(audio.paused) { audio.play(); }
+            if(audio.paused) { 
+                audio.play(); 
+                isUserInteracted = true;
+            }
         }, {once:true});
 
+        // 页面不可见时（切换标签）自动暂停
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if(!audio.paused) audio.pause(); // 切走暂停
+            } else {
+                if(isUserInteracted) audio.play(); // 切回来如果之前播放过，继续播放
+            }
+        });
+
+        // --- 3. 粒子特效逻辑 ---
         (function() {
             var ctx, hue, target = {}, tendrils = [], settings = {};
             settings.debug = false;
             settings.friction = 0.5;
             settings.trails = 20;
-            settings.size = 50;
+            settings.size = 50; // 默认大小
             settings.dampening = 0.25;
             settings.tension = 0.98;
             Math.TWO_PI = Math.PI * 2;
+            
+            // 核心交互：鼠标碰到链接时，特效发生变化
+            var hoverTriggers = document.querySelectorAll('.hover-trigger');
+            hoverTriggers.forEach(function(link) {
+                link.addEventListener('mouseenter', function() {
+                    settings.trails = 40; // 增加光束数量
+                    settings.size = 70;   // 增加光束长度
+                    settings.friction = 0.45; // 减小摩擦，更灵动
+                    reset(); // 重置以应用新参数
+                });
+                link.addEventListener('mouseleave', function() {
+                    settings.trails = 20;
+                    settings.size = 50;
+                    settings.friction = 0.5;
+                    reset();
+                });
+            });
 
             function Oscillator(options) { this.init(options || {}); }
             Oscillator.prototype = (function() {
@@ -232,6 +237,12 @@
             }
 
             function loop() {
+                // 如果页面不可见，停止渲染以节省资源
+                if (document.hidden) {
+                    requestAnimFrame(loop);
+                    return;
+                }
+
                 if (!ctx.running) return;
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.fillStyle = 'rgba(8,5,16,0.4)';
